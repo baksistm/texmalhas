@@ -1,0 +1,6 @@
+{
+  "name": "Portal Santa Rosa e TexMalha",
+  "description": "Portal corporativo integrado de acesso rápido para as malharias Santa Rosa Malhas e TexMalha, com controle de acesso exclusivo e planilhas integradas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
