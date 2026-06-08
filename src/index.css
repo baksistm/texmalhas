@@ -76,7 +76,7 @@ body {
   .no-print,
   #btn-print-texmalha-range,
   div[class*="h-14 border-t"],
-  iframe {
+  #iframe-texmalha-sheet {
     display: none !important;
     height: 0 !important;
     margin: 0 !important;
@@ -96,6 +96,18 @@ body {
     position: static !important;
     padding: 0 !important;
     margin: 0 !important;
+  }
+
+  /* Print representation of the Sheet iframe with native formatting */
+  #print-area iframe {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    height: 2500px !important; /* covers up to 99 spreadsheet rows elegantly */
+    border: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
   }
 
   /* High contrast table styling printed properly across pages */
