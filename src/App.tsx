@@ -585,7 +585,7 @@ export default function App() {
         {/* Dynamic Spreadsheet Iframe - Preserving 100% of original beautiful Google Sheets formatting */}
         <div className="w-full border-0 overflow-hidden my-4" style={{ height: '2500px' }}>
           <iframe
-            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTvRoGuxS_7-fV0gipL1S4n3TLgWkxpKmsDPVLcr7cKORSDy8mV8aXRhlXK5KONXxcEoj-hXPV1hlgu/pubhtml?gid=1310694800&range=A1:Z99&single=true&chrome=false&headers=false&widget=false"
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTvRoGuxS_7-fV0gipL1S4n3TLgWkxpKmsDPVLcr7cKORSDy8mV8aXRhlXK5KONXxcEoj-hXPV1hlgu/pubhtml?gid=1310694800&range=A1:Y99&single=true&chrome=false&headers=false&widget=false"
             className="w-full h-full border-0"
             title="Relatório Detalhado TexMalha"
             referrerPolicy="no-referrer"
