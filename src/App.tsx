@@ -25,40 +25,6 @@ const logoTexMalha = "https://i.imgur.com/nEsT68j.png";
 
 type AccessType = "santarosa" | "texmalha";
 
-// Robust comma & semicolon-safe CSV parser for live client sheet rendering
-function parseCSV(text: string): string[][] {
-  const result: string[][] = [];
-  const lines = text.split(/\r?\n/);
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (!line) continue;
-    
-    const row: string[] = [];
-    let cell = "";
-    let inQuotes = false;
-    
-    for (let j = 0; j < line.length; j++) {
-      const char = line[j];
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if ((char === ',' || char === ';') && !inQuotes) {
-        row.push(cell.trim().replace(/^"|"$/g, '')); // clean outer quotes if any
-        cell = "";
-      } else {
-        cell += char;
-      }
-    }
-    row.push(cell.trim().replace(/^"|"$/g, ''));
-    
-    // Check if row has some content before adding
-    const hasContent = row.some(cellVal => cellVal !== "");
-    if (hasContent) {
-      result.push(row);
-    }
-  }
-  return result;
-}
-
 export default function App() {
   const [selectedAccess, setSelectedAccess] = useState<AccessType>("santarosa");
   
@@ -70,11 +36,6 @@ export default function App() {
   const [userName, setUserName] = useState<string | null>(() => {
     return sessionStorage.getItem("loggedUserName") || null;
   });
-
-  // Print-related state variables
-  const [sheetRows, setSheetRows] = useState<string[][]>([]);
-  const [isCsvLoading, setIsCsvLoading] = useState(false);
-  const [csvError, setCsvError] = useState("");
 
   // Action states
   const [password, setPassword] = useState("");
@@ -106,39 +67,6 @@ export default function App() {
       clearInterval(refreshInterval);
       clearInterval(countdownInterval);
     };
-  }, [loggedCompany]);
-
-  // Load the production data for printing (Lines 1-99)
-  const fetchCsvData = (autoPrint = false) => {
-    setIsCsvLoading(true);
-    setCsvError("");
-    fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTvRoGuxS_7-fV0gipL1S4n3TLgWkxpKmsDPVLcr7cKORSDy8mV8aXRhlXK5KONXxcEoj-hXPV1hlgu/pub?gid=1310694800&single=true&output=csv")
-      .then((res) => {
-        if (!res.ok) throw new Error("Erro de rede.");
-        return res.text();
-      })
-      .then((text) => {
-        const parsed = parseCSV(text);
-        // Save first 99 parsed rows (Title lines + Data rows)
-        setSheetRows(parsed.slice(0, 99));
-        setIsCsvLoading(false);
-        if (autoPrint) {
-          setTimeout(() => {
-            window.print();
-          }, 150);
-        }
-      })
-      .catch((err) => {
-        console.error("Erro ao carregar dados para impressão:", err);
-        setCsvError("Nossos servidores não conseguiram carregar os dados reais em tempo de execução. Tente carregar novamente.");
-        setIsCsvLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    if (loggedCompany === "texmalha") {
-      fetchCsvData();
-    }
   }, [loggedCompany]);
 
   const [santarosaError, setSantarosaError] = useState("");
@@ -559,22 +487,13 @@ export default function App() {
                   <button
                     id="btn-print-texmalha-range"
                     onClick={() => {
-                      if (sheetRows.length === 0) {
-                        fetchCsvData(true);
-                      } else {
-                        window.print();
-                      }
+                      window.print();
                     }}
-                    disabled={isCsvLoading}
-                    className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 active:scale-99 disabled:opacity-50 rounded-lg border border-slate-700 shadow-sm cursor-pointer transition-all uppercase tracking-wider font-sans self-start sm:self-auto"
+                    className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 active:scale-99 rounded-lg border border-slate-700 shadow-sm cursor-pointer transition-all uppercase tracking-wider font-sans self-start sm:self-auto"
                     title="Imprimir as linhas 1 até a linha 99 contendo os cabeçalhos, logos e seu nome de usuário"
                   >
-                    {isCsvLoading ? (
-                      <RefreshCw size={14} className="animate-spin" />
-                    ) : (
-                      <Printer size={14} />
-                    )}
-                    <span>{isCsvLoading ? "Carregando Dados..." : "IMPRIMIR RELATÓRIO"}</span>
+                    <Printer size={14} />
+                    <span>IMPRIMIR RELATÓRIO</span>
                   </button>
                 </div>
 
@@ -663,36 +582,15 @@ export default function App() {
           </div>
         </div>
 
-        {/* Dynamic Spreadsheet Data Table */}
-        {sheetRows.length > 0 ? (
-          <table className="min-w-full text-left font-sans">
-            <thead>
-              <tr>
-                {sheetRows[0]?.map((headerCell, idx) => (
-                  <th key={`header-th-${idx}`} className="px-3 py-2 text-center text-xs font-bold font-sans text-white">
-                    {headerCell || `Col ${idx + 1}`}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {sheetRows.slice(1).map((row, rowIdx) => (
-                <tr key={`print-row-${rowIdx}`} className="border-b border-slate-200">
-                  {row.map((cell, cellIdx) => (
-                    <td key={`print-cell-${rowIdx}-${cellIdx}`} className="px-3 py-1.5 text-xs text-slate-700 font-mono text-center">
-                      {cell || "-"}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <div className="border border-dashed border-slate-300 rounded-lg p-10 text-center">
-            <p className="text-sm font-semibold text-slate-500 text-slate-700">Carregando visualização de dados de produção da planilha integrada...</p>
-            <p className="text-xs text-slate-400 mt-1">Por favor, certifique-se de estar conectado à internet.</p>
-          </div>
-        )}
+        {/* Dynamic Spreadsheet Iframe - Preserving 100% of original beautiful Google Sheets formatting */}
+        <div className="w-full border-0 overflow-hidden my-4" style={{ height: '2500px' }}>
+          <iframe
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTvRoGuxS_7-fV0gipL1S4n3TLgWkxpKmsDPVLcr7cKORSDy8mV8aXRhlXK5KONXxcEoj-hXPV1hlgu/pubhtml?gid=1310694800&range=A1:Z99&single=true&chrome=false&headers=false&widget=false"
+            className="w-full h-full border-0"
+            title="Relatório Detalhado TexMalha"
+            referrerPolicy="no-referrer"
+          ></iframe>
+        </div>
 
         {/* Regulatory footer */}
         <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between text-[8px] text-slate-400 font-mono">
