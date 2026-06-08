@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@theme {
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --color-santarosa-accent: #4f46e5;      /* Indigo matching the design's Santa Rosa color */
+  --color-santarosa-accent-dark: #3730a3;
+  --color-texmalha-accent: #1e293b;        /* Dark Slate matching the design's TexMalha color */
+  --color-texmalha-accent-dark: #0f172a;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #F1F5F9;
+  color: #0f172a;
+}
+
+.grid-bg {
+  background-image: radial-gradient(#CBD5E1 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.card-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #CBD5E1, transparent);
+}
+
+/* ==========================================================================
+   OFFICIAL PRINT STYLES (A4 LANDSCAPE PRODUCTION READY)
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm 10mm 8mm 10mm;
+  }
+
+  body, html {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: #000000 !important;
+    font-size: 10px !important;
+    font-family: 'Inter', -apple-system, sans-serif !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ensure the React root wrapper and main layout divs stay visible and do not flex/wrap */
+  #root,
+  #root > div,
+  div[class*="min-h-screen"] {
+    display: block !important;
+    background: none !important;
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: unset !important;
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  /* Hide all screen-only elements */
+  header,
+  main,
+  footer,
+  aside,
+  button,
+  a,
+  .no-print,
+  #btn-print-texmalha-range,
+  div[class*="h-14 border-t"],
+  iframe {
+    display: none !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+  }
+
+  /* Force display of the beautiful print template */
+  #print-area {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    position: static !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* High contrast table styling printed properly across pages */
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    page-break-inside: auto !important;
+    margin-top: 10px !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    page-break-after: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  th {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-weight: 700 !important;
+    border: 1px solid #475569 !important;
+    text-transform: uppercase !important;
+    font-size: 8px !important;
+    padding: 5px 3px !important;
+    text-align: center !important;
+  }
+
+  td {
+    border: 1px solid #94a3b8 !important;
+    padding: 4px 3px !important;
+    font-size: 8px !important;
+    color: #000000 !important;
+    background-color: transparent !important;
+    word-break: break-all !important;
+  }
+
+  /* Alternating Zebra lines for quick industrial scanning */
+  tr:nth-child(even) td {
+    background-color: #f1f5f9 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Screen Mode default: Print Template is completely invisible */
+#print-area {
+  display: none;
+}
+
