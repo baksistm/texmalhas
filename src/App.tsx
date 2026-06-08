@@ -483,18 +483,6 @@ export default function App() {
                       <p className="text-slate-400 text-xs font-medium">Exibição interativa da planilha integrada</p>
                     </div>
                   </div>
-
-                  <button
-                    id="btn-print-texmalha-range"
-                    onClick={() => {
-                      window.print();
-                    }}
-                    className="flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-white bg-slate-800 hover:bg-slate-900 active:scale-99 rounded-lg border border-slate-700 shadow-sm cursor-pointer transition-all uppercase tracking-wider font-sans self-start sm:self-auto"
-                    title="Imprimir as linhas 1 até a linha 99 contendo os cabeçalhos, logos e seu nome de usuário"
-                  >
-                    <Printer size={14} />
-                    <span>IMPRIMIR RELATÓRIO</span>
-                  </button>
                 </div>
 
                 {/* Google Sheet Live IFrame */}
